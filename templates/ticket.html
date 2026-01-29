@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Virtual Ticket - {{ event.title }} | EventPlan{% endblock %}
+
+{% block head %}
+<style>
+    .ticket-container {
+        perspective: 1000px;
+    }
+    
+    .ticket-card {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.15) 50%, rgba(245, 158, 11, 0.15) 100%);
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .ticket-divider {
+        background: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 10px,
+            rgba(255,255,255,0.1) 10px,
+            rgba(255,255,255,0.1) 20px
+        );
+    }
+    
+    .qr-container {
+        background: white;
+        padding: 16px;
+        border-radius: 16px;
+    }
+    
+    @media print {
+        body { background: white !important; }
+        .no-print { display: none !important; }
+        .ticket-card { 
+            animation: none !important;
+            page-break-inside: avoid;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-20 px-6">
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12 no-print">
+            <h1 class="text-4xl font-black gradient-text-hero mb-4">Your Virtual Pass</h1>
+            <p class="text-gray-400">Present this ticket at the event for check-in</p>
+        </div>
+        
+        <!-- Ticket Card -->
+        <div class="ticket-container">
+            <div class="ticket-card glass rounded-3xl overflow-hidden border border-white/20">
+                <!-- Event Header -->
+                <div class="p-8 pb-6 relative">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-transparent rounded-bl-full"></div>
+                    
+                    <div class="flex items-center gap-5 relative z-10">
+                        <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center p-3 shadow-xl">
+                            <img src="{{ event.logo_url }}" alt="Logo" class="w-14 h-14 object-contain">
+                        </div>
+                        <div>
+                            <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-medium uppercase">{{ event.category.value }}</span>
+                            <h2 class="text-2xl font-bold text-white mt-2">{{ event.title }}</h2>
+                            <p class="text-gray-500">by {{ event.organizer }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Divider with holes -->
+                <div class="relative h-8 flex items-center">
+                    <div class="absolute left-0 w-4 h-8 bg-[#0a0a0a] rounded-r-full"></div>
+                    <div class="flex-1 ticket-divider h-0.5"></div>
+                    <div class="absolute right-0 w-4 h-8 bg-[#0a0a0a] rounded-l-full"></div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="p-8 pt-4">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Left Side - Participant Info -->
+                        <div class="space-y-6">
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Participant</p>
+                                <p class="text-xl font-bold text-white">{{ participant.name }}</p>
+                            </div>
+                            
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Email</p>
+                                <p class="text-white">{{ participant.email }}</p>
+                            </div>
+                            
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Ticket ID</p>
+                                <p class="font-mono text-2xl font-bold gradient-text-hero tracking-wider">{{ participant.ticket_id }}</p>
+                            </div>
+                            
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Status</p>
+                                {% if participant.status.value == 'confirmed' %}
+                                <span class="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 text-green-400 rounded-full font-semibold">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Confirmed
+                                </span>
+                                {% elif participant.status.value == 'registered' %}
+                                <span class="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 text-blue-400 rounded-full font-semibold">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Pending
+                                </span>
+                                {% elif participant.status.value == 'shortlisted' %}
+                                <span class="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 text-purple-400 rounded-full font-semibold">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                    </svg>
+                                    Shortlisted
+                                </span>
+                                {% else %}
+                                <span class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-gray-400 rounded-full font-semibold">
+                                    {{ participant.status.value | title }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Right Side - QR Code -->
+                        <div class="flex flex-col items-center justify-center">
+                            <div class="qr-container" id="qr-code"></div>
+                            <p class="text-xs text-gray-500 mt-3 text-center">Scan for verification</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Event Details -->
+                    <div class="mt-8 pt-6 border-t border-white/10 grid grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Event Date</p>
+                            <p class="text-white font-semibold">{{ event.date.strftime('%B %d, %Y') }}</p>
+                            <p class="text-gray-500 text-sm">{{ event.date.strftime('%I:%M %p') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Registered On</p>
+                            <p class="text-white font-semibold">{{ participant.registered_at.strftime('%B %d, %Y') }}</p>
+                            <p class="text-gray-500 text-sm">{{ participant.registered_at.strftime('%I:%M %p') }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <div class="bg-white/5 px-8 py-4 text-center">
+                    <p class="text-xs text-gray-500">EventPlan • Powered by Campus Events Team</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="flex flex-wrap justify-center gap-4 mt-8 no-print">
+            <button onclick="window.print()" 
+                class="px-6 py-3 bg-white text-black rounded-xl font-semibold hover:bg-gray-200 transition flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                </svg>
+                Print Ticket
+            </button>
+            
+            <button onclick="downloadTicket()" 
+                class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold hover:opacity-90 transition flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                Save as Image
+            </button>
+            
+            <a href="/track?q={{ participant.ticket_id }}" 
+                class="px-6 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl font-semibold transition flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                Track Status
+            </a>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="mt-12 glass rounded-2xl p-6 no-print">
+            <h3 class="font-bold text-white mb-4">How to use this ticket</h3>
+            <ul class="space-y-3 text-gray-400 text-sm">
+                <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 bg-purple-500/20 text-purple-400 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">1</span>
+                    Save or print this ticket before the event
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 bg-purple-500/20 text-purple-400 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">2</span>
+                    Present the QR code at the check-in desk
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="w-6 h-6 bg-purple-500/20 text-purple-400 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">3</span>
+                    Collect your badge and event materials
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Generate QR code
+    const qr = qrcode(0, 'M');
+    qr.addData('{{ request.url }}');
+    qr.make();
+    document.getElementById('qr-code').innerHTML = qr.createSvgTag({
+        cellSize: 4,
+        margin: 0,
+        scalable: true
+    });
+    
+    // Download ticket as image
+    async function downloadTicket() {
+        // Using html2canvas would be ideal, but for simplicity we'll use print
+        const printContents = document.querySelector('.ticket-card').outerHTML;
+        const newWindow = window.open('', '', 'width=800,height=600');
+        newWindow.document.write(`
+            <html>
+            <head>
+                <title>EventPlan Ticket - {{ participant.ticket_id }}</title>
+                <style>
+                    body { 
+                        font-family: 'Inter', sans-serif; 
+                        background: #0a0a0a; 
+                        margin: 0; 
+                        padding: 20px;
+                    }
+                </style>
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+                <script src="https://cdn.tailwindcss.com"><\/script>
+            </head>
+            <body>
+                ${printContents}
+            </body>
+            </html>
+        `);
+        newWindow.document.close();
+        setTimeout(() => {
+            newWindow.print();
+            newWindow.close();
+        }, 500);
+    }
+</script>
+{% endblock %}

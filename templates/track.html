@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+
+{% block title %}Track Registration | EventPlan{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative min-h-[50vh] flex items-center overflow-hidden">
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920" alt="Event crowd"
+            class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/80 via-[#0a0a0a]/60 to-[#0a0a0a]"></div>
+    </div>
+
+    <div class="relative max-w-4xl mx-auto px-6 py-20 text-center">
+        <h1 class="text-5xl md:text-7xl font-black mb-4">
+            <span class="gradient-text-hero">Track</span>
+            <span class="text-white">Status</span>
+        </h1>
+        <p class="text-gray-400 text-lg max-w-xl mx-auto">
+            Enter your Ticket ID or email to view your registration journey
+        </p>
+    </div>
+</section>
+
+<!-- Search Box -->
+<div class="max-w-2xl mx-auto px-6 -mt-8 relative z-10">
+    <div class="glass rounded-2xl p-6">
+        <form action="/track" method="GET" class="flex flex-col sm:flex-row gap-4">
+            <div class="flex-1 relative">
+                <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" name="q" value="{{ query }}" required
+                    class="w-full pl-12 pr-4 py-4 bg-[#0a0a0a] border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 transition text-lg"
+                    placeholder="EVT-XXX or your@email.com">
+            </div>
+            <button type="submit"
+                class="px-8 py-4 bg-white text-black rounded-xl font-semibold hover:bg-gray-200 transition flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                Track
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Results -->
+<div class="max-w-4xl mx-auto px-6 py-16">
+    {% if query %}
+    {% if registrations %}
+    <div class="space-y-8">
+        {% for reg in registrations %}
+        <div class="glass rounded-2xl overflow-hidden">
+            <!-- Header -->
+            <div
+                class="bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-orange-600/20 p-6 border-b border-white/10">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Ticket ID</p>
+                        <p class="text-white text-3xl font-mono font-bold">{{ reg.ticket_id }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-gray-400 text-sm">Event</p>
+                        <p class="text-white font-semibold">{{ reg.event.title }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visual Status Stepper -->
+            <div class="p-8">
+                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-8">Registration Journey</h3>
+
+                {% set status_val = reg.status.value %}
+                {% set current_step = 1 %}
+                {% if status_val == 'registered' %}{% set current_step = 1 %}
+                {% elif status_val == 'under_review' %}{% set current_step = 2 %}
+                {% elif status_val == 'shortlisted' %}{% set current_step = 3 %}
+                {% elif status_val == 'confirmed' %}{% set current_step = 4 %}
+                {% elif status_val == 'waitlisted' %}{% set current_step = 3 %}
+                {% elif status_val == 'rejected' %}{% set current_step = 2 %}
+                {% endif %}
+
+                <div class="relative">
+                    <!-- Progress Line -->
+                    <div class="absolute top-5 left-0 right-0 h-1 bg-white/10 rounded-full">
+                        <div class="h-full rounded-full transition-all duration-500
+                                {% if status_val == 'confirmed' %}bg-gradient-to-r from-green-500 to-emerald-400 w-full
+                                {% elif status_val == 'shortlisted' or status_val == 'waitlisted' %}bg-gradient-to-r from-purple-500 to-pink-500 w-2/3
+                                {% elif status_val == 'under_review' %}bg-gradient-to-r from-blue-500 to-cyan-500 w-1/3
+                                {% elif status_val == 'rejected' %}bg-gradient-to-r from-red-500 to-red-400 w-1/3
+                                {% else %}bg-gradient-to-r from-cyan-500 to-blue-500 w-[10%]{% endif %}">
+                        </div>
+                    </div>
+
+                    <!-- Steps -->
+                    <div class="relative flex justify-between">
+                        <!-- Step 1 -->
+                        <div class="flex flex-col items-center">
+                            <div
+                                class="w-10 h-10 rounded-full flex items-center justify-center z-10 bg-green-500 text-white">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <p class="mt-3 text-sm font-medium text-white">Registered</p>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center z-10
+                                    {% if status_val == 'rejected' %}bg-red-500 text-white
+                                    {% elif current_step >= 2 %}bg-green-500 text-white
+                                    {% elif current_step == 1 %}bg-purple-500 text-white animate-pulse
+                                    {% else %}bg-white/10 text-gray-500{% endif %}">
+                                {% if status_val == 'rejected' %}
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                {% elif current_step >= 2 %}
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                {% else %}
+                                <span class="text-sm font-bold">2</span>
+                                {% endif %}
+                            </div>
+                            <p class="mt-3 text-sm font-medium text-white">Under Review</p>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center z-10
+                                    {% if status_val == 'waitlisted' %}bg-orange-500 text-white
+                                    {% elif current_step >= 3 %}bg-green-500 text-white
+                                    {% elif current_step == 2 %}bg-purple-500 text-white animate-pulse
+                                    {% else %}bg-white/10 text-gray-500{% endif %}">
+                                {% if current_step >= 3 %}
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                {% else %}
+                                <span class="text-sm font-bold">3</span>
+                                {% endif %}
+                            </div>
+                            <p class="mt-3 text-sm font-medium text-white">
+                                {% if status_val == 'waitlisted' %}Waitlisted{% else %}Shortlisted{% endif %}
+                            </p>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center z-10
+                                    {% if status_val == 'confirmed' %}bg-gradient-to-r from-green-500 to-emerald-400 text-white shadow-lg shadow-green-500/30
+                                    {% elif current_step == 3 %}bg-purple-500 text-white animate-pulse
+                                    {% else %}bg-white/10 text-gray-500{% endif %}">
+                                {% if status_val == 'confirmed' %}
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                {% else %}
+                                <span class="text-sm font-bold">4</span>
+                                {% endif %}
+                            </div>
+                            <p class="mt-3 text-sm font-medium text-white">Confirmed</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Message -->
+                <div class="mt-10 p-5 rounded-xl
+                        {% if status_val == 'confirmed' %}bg-green-500/10 border border-green-500/30
+                        {% elif status_val == 'rejected' %}bg-red-500/10 border border-red-500/30
+                        {% elif status_val == 'waitlisted' %}bg-orange-500/10 border border-orange-500/30
+                        {% else %}bg-purple-500/10 border border-purple-500/30{% endif %}">
+                    <div class="flex items-center gap-4">
+                        {% if status_val == 'confirmed' %}
+                        <span class="text-4xl">🎉</span>
+                        <div>
+                            <p class="font-bold text-green-400 text-lg">Congratulations! You're In!</p>
+                            <p class="text-green-300/80">Your registration has been confirmed. See you at the event!</p>
+                        </div>
+                        {% elif status_val == 'rejected' %}
+                        <span class="text-4xl">😔</span>
+                        <div>
+                            <p class="font-bold text-red-400 text-lg">Application Not Selected</p>
+                            <p class="text-red-300/80">Unfortunately, your application wasn't selected. Keep trying!</p>
+                        </div>
+                        {% elif status_val == 'waitlisted' %}
+                        <span class="text-4xl">⏳</span>
+                        <div>
+                            <p class="font-bold text-orange-400 text-lg">You're on the Waitlist</p>
+                            <p class="text-orange-300/80">You'll be notified if a spot opens up.</p>
+                        </div>
+                        {% elif status_val == 'shortlisted' %}
+                        <span class="text-4xl">⭐</span>
+                        <div>
+                            <p class="font-bold text-purple-400 text-lg">You've Been Shortlisted!</p>
+                            <p class="text-purple-300/80">Great news! Final confirmation coming soon.</p>
+                        </div>
+                        {% elif status_val == 'under_review' %}
+                        <span class="text-4xl">🔍</span>
+                        <div>
+                            <p class="font-bold text-purple-400 text-lg">Application Under Review</p>
+                            <p class="text-purple-300/80">The organizers are reviewing your application.</p>
+                        </div>
+                        {% else %}
+                        <span class="text-4xl">✅</span>
+                        <div>
+                            <p class="font-bold text-purple-400 text-lg">Registration Received</p>
+                            <p class="text-purple-300/80">Your application is in the queue for review.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Virtual Ticket Pass -->
+            {% if status_val == 'confirmed' %}
+            <div class="border-t border-white/10 p-8 bg-[#050505]">
+                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-6">Your Virtual Pass</h3>
+
+                <div class="relative bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 rounded-2xl overflow-hidden max-w-md mx-auto"
+                    id="ticket-{{ reg.ticket_id }}">
+                    <!-- Pattern -->
+                    <div class="absolute inset-0 opacity-20">
+                        <svg class="w-full h-full">
+                            <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <circle cx="2" cy="2" r="1" fill="white" />
+                            </pattern>
+                            <rect width="100%" height="100%" fill="url(#dots)" />
+                        </svg>
+                    </div>
+
+                    <div class="relative p-6">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <p class="text-white/70 text-xs uppercase tracking-wider">Event Pass</p>
+                                <h4 class="text-white text-xl font-bold">{{ reg.event.title }}</h4>
+                                <p class="text-white/80 text-sm mt-1">{{ reg.event.date.strftime('%B %d, %Y') }}</p>
+                            </div>
+                            <div class="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">EP</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-end justify-between">
+                            <div>
+                                <p class="text-white/70 text-xs uppercase tracking-wider">Attendee</p>
+                                <p class="text-white text-lg font-semibold">{{ reg.name }}</p>
+                                <p class="text-white/80 text-sm font-mono mt-2">{{ reg.ticket_id }}</p>
+                            </div>
+                            <div class="bg-white rounded-xl p-2" id="qr-{{ reg.ticket_id }}">
+                                <!-- QR Code -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur-sm px-6 py-3 flex items-center justify-between">
+                        <span class="text-white/80 text-xs">Scan to verify</span>
+                        <span class="text-white font-mono text-xs">{{ reg.email }}</span>
+                    </div>
+                </div>
+                
+                <!-- View Full Ticket Button -->
+                <div class="mt-6 text-center">
+                    <a href="/ticket/{{ reg.ticket_id }}" 
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold hover:opacity-90 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
+                        </svg>
+                        View Full Ticket
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Details -->
+            <div class="border-t border-white/10 p-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                    <p class="text-gray-500">Name</p>
+                    <p class="text-white font-medium">{{ reg.name }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Email</p>
+                    <p class="text-white font-medium">{{ reg.email }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Event Date</p>
+                    <p class="text-white font-medium">{{ reg.event.date.strftime('%b %d, %Y') }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Registered</p>
+                    <p class="text-white font-medium">{{ reg.registered_at.strftime('%b %d, %Y') }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="glass rounded-2xl p-16 text-center">
+        <div class="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                </path>
+            </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-3">No Registrations Found</h3>
+        <p class="text-gray-500 mb-6">We couldn't find any registrations for "<span class="font-mono text-purple-400">{{
+                query }}</span>"</p>
+        <p class="text-gray-600 text-sm">Double-check your Ticket ID or email address</p>
+    </div>
+    {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.querySelectorAll('[id^="qr-"]').forEach(el => {
+        const ticketId = el.id.replace('qr-', '');
+        const qr = qrcode(0, 'M');
+        qr.addData(`${window.location.origin}/track?q=${ticketId}`);
+        qr.make();
+        el.innerHTML = qr.createImgTag(3, 0);
+    });
+</script>
+{% endblock %}

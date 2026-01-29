@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+
+{% block title %}EventPlan | Discover Campus Events{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Large Gradient Text -->
+<section class="relative min-h-[90vh] flex items-center overflow-hidden">
+    <!-- Background Image -->
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920" alt="Crowd at event"
+            class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/70 via-[#0a0a0a]/50 to-[#0a0a0a]"></div>
+    </div>
+
+    <!-- Hero Content -->
+    <div class="relative max-w-7xl mx-auto px-6 py-20 w-full">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
+                    Precision planning for<br>
+                    <span class="text-gray-300">perfect campus events</span>
+                </h2>
+            </div>
+            <div class="lg:text-right">
+                <p class="text-gray-400 text-lg leading-relaxed">
+                    With our expert planning and seamless execution, we ensure every detail is
+                    perfect so that you can focus on your goals.
+                </p>
+            </div>
+        </div>
+
+        <!-- Large Gradient Brand Text -->
+        <div class="mt-12">
+            <h1
+                class="text-[8rem] md:text-[12rem] lg:text-[16rem] font-black leading-none gradient-text-hero tracking-tighter">
+                Event<span class="text-white">Plan</span>
+            </h1>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="flex justify-center mt-8">
+            <a href="#events"
+                class="inline-flex items-center gap-3 px-8 py-4 glass rounded-full hover:bg-white/10 transition group">
+                <span class="w-6 h-6 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-purple-400" viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="12" r="3" fill="#3b82f6" />
+                        <circle cx="6" cy="12" r="2" fill="#a855f7" />
+                        <circle cx="18" cy="12" r="2" fill="#ec4899" />
+                        <circle cx="12" cy="6" r="2" fill="#06b6d4" />
+                        <circle cx="12" cy="18" r="2" fill="#f59e0b" />
+                    </svg>
+                </span>
+                <span class="text-white font-medium">Explore Events</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Event Categories - Bento Grid -->
+<section id="events" class="py-20 bg-[#0a0a0a]">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-16">
+            Our event categories
+        </h2>
+
+        <!-- Bento Grid -->
+        <div class="grid grid-cols-12 gap-4 auto-rows-[200px]">
+            <!-- Hackathons - Large -->
+            <a href="/?category=hackathon" class="col-span-12 md:col-span-4 row-span-2 bento-card group">
+                <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800" alt="Hackathons"
+                    class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-6 left-6">
+                    <h3 class="text-white text-xl font-semibold">Hackathons</h3>
+                </div>
+            </a>
+
+            <!-- Conferences - Wide -->
+            <a href="/?category=webinar" class="col-span-12 md:col-span-5 bento-card group">
+                <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800" alt="Conferences"
+                    class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-6 left-6">
+                    <h3 class="text-white text-xl font-semibold">Conferences</h3>
+                </div>
+            </a>
+
+            <!-- Workshops -->
+            <a href="/?category=workshop" class="col-span-12 md:col-span-3 bento-card group">
+                <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800" alt="Workshops"
+                    class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-6 left-6">
+                    <h3 class="text-white text-xl font-semibold">Workshops</h3>
+                </div>
+            </a>
+
+            <!-- Cultural -->
+            <a href="/?category=cultural" class="col-span-6 md:col-span-4 bento-card group">
+                <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800" alt="Cultural"
+                    class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-6 left-6">
+                    <h3 class="text-white text-xl font-semibold">Cultural Fests</h3>
+                </div>
+            </a>
+
+            <!-- Seminars -->
+            <a href="/?category=competition" class="col-span-6 md:col-span-4 bento-card group">
+                <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800" alt="Competitions"
+                    class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-6 left-6">
+                    <h3 class="text-white text-xl font-semibold">Competitions</h3>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Our Work Process -->
+<section class="py-20 bg-[#0a0a0a]">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-20">Our work process</h2>
+
+        <div class="grid md:grid-cols-2 gap-x-20 gap-y-16">
+            <!-- Step 01 -->
+            <div class="flex gap-6">
+                <div class="flex-shrink-0">
+                    <span class="text-5xl font-black gradient-text-cyan">01</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Discovery</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Browse through our curated list of campus events. Filter by category,
+                        date, or search for specific opportunities.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 02 -->
+            <div class="flex gap-6 md:mt-32">
+                <div class="flex-shrink-0">
+                    <span class="text-5xl font-black gradient-text-blue-purple">02</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Registration</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Quick and easy signup process. Get your unique ticket ID instantly
+                        and receive real-time updates.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 03 -->
+            <div class="flex gap-6">
+                <div class="flex-shrink-0">
+                    <span class="text-5xl font-black gradient-text-pink-yellow">03</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Confirmation</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Track your application status with our visual progress tracker.
+                        Get notified at every stage.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 04 -->
+            <div class="flex gap-6 md:mt-32">
+                <div class="flex-shrink-0">
+                    <span class="text-5xl font-black gradient-text-hero">04</span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Participation</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Show up with your virtual ticket pass. Scan QR code for instant
+                        verification and entry.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Live Events -->
+<section class="py-20 bg-[#0a0a0a]">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="flex items-center justify-between mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-white">
+                Live opportunities
+            </h2>
+            <div class="flex items-center gap-2 text-sm text-gray-400">
+                <span class="w-2 h-2 bg-green-500 rounded-full pulse-dot"></span>
+                {{ event_data|length }} Active Events
+            </div>
+        </div>
+
+        <!-- Search & Filters -->
+        <form action="/" method="GET" class="mb-12">
+            <div class="flex flex-wrap gap-4 items-center">
+                <div class="flex-1 min-w-[300px]">
+                    <div class="relative">
+                        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" name="search" value="{{ search_query }}"
+                            class="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition"
+                            placeholder="Search events...">
+                    </div>
+                </div>
+
+                <!-- Category Pills -->
+                <div class="flex flex-wrap gap-2">
+                    {% set categories = [
+                    ('all', 'All'),
+                    ('hackathon', 'Hackathons'),
+                    ('workshop', 'Workshops'),
+                    ('cultural', 'Cultural'),
+                    ('webinar', 'Webinars'),
+                    ('competition', 'Competitions')
+                    ] %}
+                    {% for cat_id, cat_name in categories %}
+                    <button type="submit" name="category" value="{{ cat_id }}" class="px-4 py-2 rounded-full text-sm font-medium transition
+                        {% if current_category == cat_id %}
+                        bg-white text-black
+                        {% else %}
+                        bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white
+                        {% endif %}">
+                        {{ cat_name }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+        </form>
+
+        <!-- Event Cards Grid -->
+        {% if event_data %}
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in event_data %}
+            {% set event = item.event %}
+            {% set count = item.participant_count %}
+
+            <div
+                class="group bg-white/5 rounded-2xl overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all duration-300 card-hover">
+                <!-- Banner -->
+                <div class="relative h-48 overflow-hidden">
+                    <img src="{{ event.banner_url }}" alt="{{ event.title }}"
+                        class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
+
+                    <!-- Category Badge -->
+                    <div class="absolute top-4 left-4">
+                        <span
+                            class="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs font-medium text-white uppercase tracking-wide">
+                            {{ event.category.value }}
+                        </span>
+                    </div>
+
+                    <!-- Logo -->
+                    <div class="absolute -bottom-6 left-4">
+                        <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center p-2 shadow-xl">
+                            <img src="{{ event.logo_url }}" alt="Logo" class="w-10 h-10 object-contain">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 pt-10">
+                    <h3 class="text-lg font-bold text-white mb-1 group-hover:text-purple-400 transition">
+                        {{ event.title }}
+                    </h3>
+                    <p class="text-sm text-gray-500 mb-4">by {{ event.organizer }}</p>
+
+                    <!-- Stats -->
+                    <div class="flex items-center gap-4 mb-4 text-sm">
+                        <span class="flex items-center gap-1 text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z">
+                                </path>
+                            </svg>
+                            {{ count }}+ Registered
+                        </span>
+                        <span class="text-emerald-400 font-medium">{{ event.prize_pool }}</span>
+                    </div>
+
+                    <!-- Countdown -->
+                    <div x-data="countdown('{{ event.deadline.isoformat() }}')" class="mb-5">
+                        <p class="text-xs text-gray-500 mb-2 uppercase tracking-wide">Closes in</p>
+                        <div class="flex gap-2" x-show="!expired">
+                            <div class="countdown-box bg-white/5 rounded-lg px-3 py-2 text-center">
+                                <span x-text="days" class="block text-lg font-bold text-white">00</span>
+                                <span class="text-xs text-gray-500">Days</span>
+                            </div>
+                            <div class="countdown-box bg-white/5 rounded-lg px-3 py-2 text-center">
+                                <span x-text="hours" class="block text-lg font-bold text-white">00</span>
+                                <span class="text-xs text-gray-500">Hrs</span>
+                            </div>
+                            <div class="countdown-box bg-white/5 rounded-lg px-3 py-2 text-center">
+                                <span x-text="minutes" class="block text-lg font-bold text-white">00</span>
+                                <span class="text-xs text-gray-500">Min</span>
+                            </div>
+                            <div class="countdown-box bg-white/5 rounded-lg px-3 py-2 text-center">
+                                <span x-text="seconds"
+                                    class="block text-lg font-bold gradient-text-pink-yellow">00</span>
+                                <span class="text-xs text-gray-500">Sec</span>
+                            </div>
+                        </div>
+                        <div x-show="expired" class="text-red-400 font-medium">Registration Closed</div>
+                    </div>
+
+                    <!-- Action -->
+                    <a href="/event/{{ event.id }}"
+                        class="block w-full py-3 bg-white text-black text-center rounded-xl font-semibold hover:bg-gray-200 transition">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-20">
+            <div class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                    </path>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">No Events Found</h3>
+            <p class="text-gray-500 mb-6">Try adjusting your search or filter criteria</p>
+            <a href="/" class="px-6 py-3 bg-white text-black rounded-xl font-semibold hover:bg-gray-200 transition">
+                View All Events
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Mission Statement -->
+<section class="py-20 bg-[#0a0a0a]">
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="grid md:grid-cols-3 gap-8 items-center">
+            <div class="md:col-span-1">
+                <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600" alt="Event"
+                    class="rounded-2xl w-full h-64 object-cover">
+                <div class="mt-4">
+                    <span class="text-4xl font-bold gradient-text-cyan">1K+</span>
+                    <p class="text-gray-500 text-sm">Events organized</p>
+                </div>
+            </div>
+            <div class="md:col-span-1 text-center">
+                <h2 class="text-2xl md:text-3xl font-bold text-white leading-relaxed">
+                    Our mission is to deliver exceptional event experiences that exceed expectations.
+                </h2>
+            </div>
+            <div class="md:col-span-1 text-right">
+                <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600" alt="Speaker"
+                    class="rounded-2xl w-full h-64 object-cover">
+                <div class="mt-4">
+                    <span class="text-4xl font-bold gradient-text-pink-yellow">96%</span>
+                    <p class="text-gray-500 text-sm">Satisfaction rate</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
