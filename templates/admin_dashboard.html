@@ -2,7 +2,7 @@
 
 {% block nav_dashboard %}active{% endblock %}
 
-{% block title %}Dashboard | EventPlan Admin{% endblock %}
+{% block title %}Dashboard | EventPlan Admin – IU{% endblock %}
 
 {% block content %}
 <!-- Header -->
@@ -153,10 +153,23 @@
                         {% endif %}
                     </td>
                     <td class="py-4 px-6 text-right">
-                        <a href="/admin/event/{{ event.id }}"
-                            class="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg text-sm font-medium transition">
-                            Manage
-                        </a>
+                        <div class="flex items-center justify-end gap-2">
+                            <a href="/admin/event/{{ event.id }}"
+                                class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white rounded-lg text-xs font-medium transition">
+                                Manage
+                            </a>
+                            <a href="/admin/event/{{ event.id }}/edit"
+                                class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-lg text-xs font-medium transition">
+                                Edit
+                            </a>
+                            <form action="/admin/event/{{ event.id }}/delete" method="POST" class="inline"
+                                onsubmit="return confirm('Delete {{ event.title }}? This removes all participants and cannot be undone.')">
+                                <button type="submit"
+                                    class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-xs font-medium transition">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}

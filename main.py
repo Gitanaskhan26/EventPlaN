@@ -1,9 +1,10 @@
 """
-Campus Event Manager - Unstop Edition
+EventPlan – Integral University Event Management System
 FastAPI + Jinja2 + SQLite + Tailwind CSS + WebSockets + Alpine.js
+Developed by Team WunderBar
 """
 
-from fastapi import FastAPI, Request, Form, HTTPException, WebSocket, WebSocketDisconnect, Query, Cookie, Depends
+from fastapi import FastAPI, Request, Form, File, UploadFile, HTTPException, WebSocket, WebSocketDisconnect, Query, Cookie, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -19,6 +20,8 @@ import json
 import asyncio
 import hashlib
 import secrets
+import os
+import uuid
 
 # ==================== DATABASE SETUP ====================
 
@@ -67,8 +70,8 @@ class Event(Base):
     category = Column(SQLEnum(EventCategory), default=EventCategory.hackathon)
     prize_pool = Column(String, default="Certificates")
     participant_limit = Column(Integer, default=500)
-    organizer = Column(String, default="Campus Events Team")
-    eligibility = Column(String, default="All students welcome")
+    organizer = Column(String, default="Integral University")
+    eligibility = Column(String, default="All Integral University students")
     
     participants = relationship("Participant", back_populates="event")
     announcements = relationship("Announcement", back_populates="event", order_by="desc(Announcement.created_at)")
@@ -164,9 +167,28 @@ def get_status_step(status: ParticipantStatus) -> int:
 
 # ==================== APP SETUP ====================
 
-app = FastAPI(title="Campus Event Manager - Unstop Edition")
+app = FastAPI(title="EventPlan – Integral University")
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Create uploads directory and serve it
+UPLOAD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
+
 templates = Jinja2Templates(directory="templates")
+
+
+def save_upload(file: UploadFile) -> str:
+    """Save an uploaded file and return its URL path."""
+    ext = os.path.splitext(file.filename)[1].lower() or ".png"
+    allowed = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"}
+    if ext not in allowed:
+        ext = ".png"
+    filename = f"{uuid.uuid4().hex}{ext}"
+    path = os.path.join(UPLOAD_DIR, filename)
+    with open(path, "wb") as f:
+        f.write(file.file.read())
+    return f"/uploads/{filename}"
 
 # Add custom filters to Jinja2
 templates.env.globals['get_status_step'] = get_status_step
@@ -217,44 +239,44 @@ def init_mock_data():
     
     # Create Events with Unstop-style data
     event1 = Event(
-        title="Hackathon 2026",
-        description="48-hour coding marathon! Build innovative solutions to real-world problems. Form teams of up to 4 members and compete for amazing prizes. Mentors from top tech companies will guide you through the journey.",
-        date=datetime(2026, 2, 15, 9, 0),
-        deadline=datetime(2026, 2, 10, 23, 59),
+        title="IU Hackathon 2026",
+        description="48-hour coding marathon hosted by the Department of Computer Science, Integral University, Lucknow. Build innovative solutions to real-world problems, form teams of up to 4 members, and compete for exciting prizes. Industry mentors will guide you through the journey.",
+        date=datetime(2026, 2, 20, 9, 0),
+        deadline=datetime(2026, 2, 18, 23, 59),
         is_open=True,
         category=EventCategory.hackathon,
-        prize_pool="$10,000 + Internships",
+        prize_pool="\u20b950,000 + Internships",
         participant_limit=500,
-        organizer="Tech Club",
-        eligibility="All undergraduate and graduate students",
+        organizer="Dept. of Computer Science, IU",
+        eligibility="All Integral University students (UG & PG)",
         banner_url="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200",
         logo_url="https://img.icons8.com/fluency/96/code.png"
     )
     event2 = Event(
-        title="AI Workshop",
-        description="Hands-on workshop on Machine Learning and AI. Learn to build your first neural network from scratch! No prior ML experience required. Bring your laptop with Python installed.",
-        date=datetime(2026, 2, 20, 14, 0),
-        deadline=datetime(2026, 2, 18, 23, 59),
+        title="AI & ML Workshop",
+        description="Hands-on workshop on Machine Learning and Artificial Intelligence conducted by the Integral University AI Research Cell. Learn to build your first neural network from scratch — no prior ML experience required. Bring your laptop with Python installed.",
+        date=datetime(2026, 2, 25, 14, 0),
+        deadline=datetime(2026, 2, 23, 23, 59),
         is_open=True,
         category=EventCategory.workshop,
-        prize_pool="Certificates + Swag",
-        participant_limit=100,
-        organizer="AI Research Lab",
-        eligibility="Anyone interested in AI/ML",
+        prize_pool="Certificates + Goodies",
+        participant_limit=120,
+        organizer="AI Research Cell, IU",
+        eligibility="All IU students & faculty",
         banner_url="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1200",
         logo_url="https://img.icons8.com/fluency/96/artificial-intelligence.png"
     )
     event3 = Event(
-        title="Cultural Fest 2026",
-        description="The biggest cultural extravaganza of the year! Dance, music, drama, and more. Showcase your talent and win exciting prizes.",
-        date=datetime(2026, 3, 5, 10, 0),
-        deadline=datetime(2026, 3, 1, 23, 59),
+        title="IU Cultural Fest — Jashan 2026",
+        description="The biggest cultural extravaganza at Integral University! Dance, music, drama, poetry, and more. Showcase your talent on the grand stage and win exciting prizes and trophies.",
+        date=datetime(2026, 3, 10, 10, 0),
+        deadline=datetime(2026, 3, 5, 23, 59),
         is_open=True,
         category=EventCategory.cultural,
-        prize_pool="$5,000 + Trophies",
+        prize_pool="\u20b925,000 + Trophies",
         participant_limit=1000,
-        organizer="Cultural Committee",
-        eligibility="All students",
+        organizer="Cultural Committee, IU",
+        eligibility="All Integral University students",
         banner_url="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200",
         logo_url="https://img.icons8.com/fluency/96/theatre-mask.png"
     )
@@ -266,29 +288,29 @@ def init_mock_data():
     
     # Create Stages for Hackathon
     stages1 = [
-        Stage(event_id=event1.id, name="Registration", description="Sign up and form your team", order=1, status=StageStatus.active, start_date=datetime(2026, 1, 15), end_date=datetime(2026, 2, 10)),
-        Stage(event_id=event1.id, name="Idea Submission", description="Submit your project idea", order=2, status=StageStatus.locked, start_date=datetime(2026, 2, 11), end_date=datetime(2026, 2, 12)),
-        Stage(event_id=event1.id, name="Hacking Period", description="48 hours of coding", order=3, status=StageStatus.locked, start_date=datetime(2026, 2, 15), end_date=datetime(2026, 2, 17)),
-        Stage(event_id=event1.id, name="Final Presentation", description="Demo your project to judges", order=4, status=StageStatus.locked, start_date=datetime(2026, 2, 17), end_date=datetime(2026, 2, 17)),
+        Stage(event_id=event1.id, name="Registration", description="Sign up and form your team", order=1, status=StageStatus.active, start_date=datetime(2026, 2, 1), end_date=datetime(2026, 2, 18)),
+        Stage(event_id=event1.id, name="Idea Submission", description="Submit your project idea", order=2, status=StageStatus.locked, start_date=datetime(2026, 2, 19), end_date=datetime(2026, 2, 19)),
+        Stage(event_id=event1.id, name="Hacking Period", description="48 hours of coding at IU campus", order=3, status=StageStatus.locked, start_date=datetime(2026, 2, 20), end_date=datetime(2026, 2, 22)),
+        Stage(event_id=event1.id, name="Final Presentation", description="Demo your project to the judges", order=4, status=StageStatus.locked, start_date=datetime(2026, 2, 22), end_date=datetime(2026, 2, 22)),
     ]
     
     # Create Stages for Workshop
     stages2 = [
-        Stage(event_id=event2.id, name="Registration", description="Secure your spot", order=1, status=StageStatus.active, start_date=datetime(2026, 2, 1), end_date=datetime(2026, 2, 18)),
-        Stage(event_id=event2.id, name="Pre-Workshop Setup", description="Install required software", order=2, status=StageStatus.locked, start_date=datetime(2026, 2, 19), end_date=datetime(2026, 2, 19)),
-        Stage(event_id=event2.id, name="Workshop Day", description="Hands-on learning", order=3, status=StageStatus.locked, start_date=datetime(2026, 2, 20), end_date=datetime(2026, 2, 20)),
+        Stage(event_id=event2.id, name="Registration", description="Secure your spot", order=1, status=StageStatus.active, start_date=datetime(2026, 2, 10), end_date=datetime(2026, 2, 23)),
+        Stage(event_id=event2.id, name="Pre-Workshop Setup", description="Install required software", order=2, status=StageStatus.locked, start_date=datetime(2026, 2, 24), end_date=datetime(2026, 2, 24)),
+        Stage(event_id=event2.id, name="Workshop Day", description="Hands-on learning at the AI Lab", order=3, status=StageStatus.locked, start_date=datetime(2026, 2, 25), end_date=datetime(2026, 2, 25)),
     ]
     
     db.add_all(stages1 + stages2)
     
     # Create Sample Participants
     participants = [
-        Participant(event_id=event1.id, name="Alice Johnson", email="alice@university.edu", ticket_id="EVT-101", status=ParticipantStatus.confirmed),
-        Participant(event_id=event1.id, name="Bob Smith", email="bob@university.edu", ticket_id="EVT-102", status=ParticipantStatus.under_review),
-        Participant(event_id=event1.id, name="Carol White", email="carol@university.edu", ticket_id="EVT-103", status=ParticipantStatus.rejected),
-        Participant(event_id=event1.id, name="Dan Brown", email="dan@university.edu", ticket_id="EVT-104", status=ParticipantStatus.shortlisted),
-        Participant(event_id=event2.id, name="Eva Garcia", email="eva@university.edu", ticket_id="EVT-201", status=ParticipantStatus.confirmed),
-        Participant(event_id=event2.id, name="Frank Lee", email="frank@university.edu", ticket_id="EVT-202", status=ParticipantStatus.registered),
+        Participant(event_id=event1.id, name="Anas Khalid", email="anas@iul.ac.in", ticket_id="EVT-101", status=ParticipantStatus.confirmed),
+        Participant(event_id=event1.id, name="Ali Hasan", email="ali@iul.ac.in", ticket_id="EVT-102", status=ParticipantStatus.under_review),
+        Participant(event_id=event1.id, name="Ahmad Rahman", email="ahmad@iul.ac.in", ticket_id="EVT-103", status=ParticipantStatus.shortlisted),
+        Participant(event_id=event1.id, name="Zara Siddiqui", email="zara@iul.ac.in", ticket_id="EVT-104", status=ParticipantStatus.registered),
+        Participant(event_id=event2.id, name="Fatima Rizvi", email="fatima@iul.ac.in", ticket_id="EVT-201", status=ParticipantStatus.confirmed),
+        Participant(event_id=event2.id, name="Mohd Faizan", email="faizan@iul.ac.in", ticket_id="EVT-202", status=ParticipantStatus.registered),
     ]
     
     for p in participants:
@@ -296,15 +318,15 @@ def init_mock_data():
     
     # Create Sample Announcements
     announcements = [
-        Announcement(event_id=event1.id, message="Registration deadline extended to Feb 10th!"),
-        Announcement(event_id=event1.id, message="New sponsor announcement: TechCorp is joining us with exclusive internship opportunities!"),
+        Announcement(event_id=event1.id, message="Registration deadline extended to Feb 18th!"),
+        Announcement(event_id=event1.id, message="Industry sponsors confirmed — internship opportunities for top performers!"),
     ]
     for a in announcements:
         db.add(a)
     
     db.commit()
     db.close()
-    print("Mock data initialized with Unstop-style content!")
+    print("Mock data initialized for Integral University events.")
 
 # ==================== WEBSOCKET ENDPOINT ====================
 
@@ -609,14 +631,22 @@ def create_event(
     category: str = Form(...),
     prize_pool: str = Form("Certificates"),
     participant_limit: int = Form(500),
-    organizer: str = Form("Campus Events Team"),
-    eligibility: str = Form("All students welcome"),
+    organizer: str = Form("Integral University"),
+    eligibility: str = Form("All Integral University students"),
     banner_url: str = Form("/static/default-banner.jpg"),
-    logo_url: str = Form("/static/default-logo.png")
+    logo_url: str = Form("/static/default-logo.png"),
+    banner_file: UploadFile = File(None),
+    logo_file: UploadFile = File(None)
 ):
     """Create a new event"""
     if not verify_admin(request):
         return RedirectResponse(url="/admin/login", status_code=303)
+    
+    # Handle file uploads — uploaded files take priority over URLs
+    if banner_file and banner_file.filename:
+        banner_url = save_upload(banner_file)
+    if logo_file and logo_file.filename:
+        logo_url = save_upload(logo_file)
     
     db = SessionLocal()
     
@@ -803,13 +833,24 @@ def update_event(
     category: str = Form(...),
     prize_pool: str = Form("Certificates"),
     participant_limit: int = Form(500),
-    organizer: str = Form("Campus Events Team"),
-    eligibility: str = Form("All students welcome"),
+    organizer: str = Form("Integral University"),
+    eligibility: str = Form("All Integral University students"),
     banner_url: str = Form("/static/default-banner.jpg"),
     logo_url: str = Form("/static/default-logo.png"),
-    is_open: bool = Form(True)
+    is_open: Optional[str] = Form(None),
+    banner_file: UploadFile = File(None),
+    logo_file: UploadFile = File(None)
 ):
     """Update an existing event"""
+    # Handle file uploads — uploaded files take priority over URLs
+    if banner_file and banner_file.filename:
+        banner_url = save_upload(banner_file)
+    if logo_file and logo_file.filename:
+        logo_url = save_upload(logo_file)
+    
+    # Checkbox: present in form = "true", absent = None
+    is_open_bool = is_open is not None
+    
     db = SessionLocal()
     event = db.query(Event).filter(Event.id == event_id).first()
     if not event:
@@ -827,7 +868,7 @@ def update_event(
     event.eligibility = eligibility.strip()
     event.banner_url = banner_url.strip() or "/static/default-banner.jpg"
     event.logo_url = logo_url.strip() or "/static/default-logo.png"
-    event.is_open = is_open
+    event.is_open = is_open_bool
     
     db.commit()
     db.close()

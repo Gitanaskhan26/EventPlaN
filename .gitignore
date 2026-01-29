@@ -45,3 +45,6 @@ Thumbs.db
 
 # Logs
 *.log
+uploads/
+campus_events.db
+__pycache__/
