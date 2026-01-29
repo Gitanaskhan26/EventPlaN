@@ -25,8 +25,17 @@ import uuid
 
 # ==================== DATABASE SETUP ====================
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./campus_events.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+DATA_DIR = os.getenv("RENDER_DISK_PATH") or os.getenv("DATA_DIR")
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not SQLALCHEMY_DATABASE_URL:
+    db_path = os.path.join(DATA_DIR, "campus_events.db") if DATA_DIR else "./campus_events.db"
+    SQLALCHEMY_DATABASE_URL = f"sqlite:///{db_path}"
+
+if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -171,7 +180,7 @@ app = FastAPI(title="EventPlan – Integral University")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Create uploads directory and serve it
-UPLOAD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
+UPLOAD_DIR = os.path.join(DATA_DIR, "uploads") if DATA_DIR else os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
